@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
       while (regex_match(line, match, imagepattern)) {
         string prefixadd = "";
         if (strcmp(match.str(1).substr(0,4).c_str(), "http") != 0 ) prefixadd = urlBase+"/";
-        line = std::regex_replace(line, imagepattern, "[img] "+prefixadd+"$2 [/img]");
+        line = std::regex_replace(line, imagepattern, "[video] "+prefixadd+"$2 [/video]");
       }
       // [video] https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/images/demo.webm [/video]
 

@@ -2,6 +2,9 @@
 
 Converts regular markdown to steam-flavored markdown
 
+This converter supports : 
 
-test **test
-test**
+- \# Headings (up to three levels)
+
+
+\`\`\`Code blocks\`\`\` 
