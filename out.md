@@ -1,6 +1,8 @@
+<!--  mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/ -->
+
 [h1] markdown-to-steam [/h1]
 
-Converts regular markdown to steam-flavored markdown.\
+Converts regular markdown to steam-flavored markdown.
 This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/formattinghelp]steam's syntax guide[/url].
 
 
@@ -18,24 +20,36 @@ This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/
 
 [h3] headings (up to level 3) [/h3]
 
-[strike]striked text[/strike]\
-[b]bold text[/b]\
-[i]italic text[/i] (with  `*` or `_`)\
-[u]underlined text[/u] (with `__`  or [noparse]<u><\u>[/noparse])\
-[code]Code blocks[/code] (Not inline, big blocks only)\
-[noparse]tiny [i]code[/i] [i]blocks*``  (will not convert, and steam will not render)\
+[strike]striked text[/strike]
+[b]bold text[/b]
+[i]italic text[/i] (with  [noparse]*[/noparse] or [noparse]_[/noparse])
+[u]underlined text[/u] (with [noparse]__[/noparse]  or [noparse]<u><u>[/noparse])
+[code]Code blocks[/code] (Not inline, big blocks only)
+[noparse]tiny [i]code[/i] *blocks*[/noparse]  (will not convert, and steam will not render)
 
----
-`---` separators\
+[hr][/hr]
+[noparse]---[/noparse] separators
 [*] lists (first level only)
 
-[/noparse]<!--  comments will show up in processed html as a zero-width table -->[noparse]\
+[noparse]<!--  comments will show up in processed html as a zero-width table -->[/noparse]
 <!--  like this -->
-[/noparse]![url=images and videos]embed[/url][noparse] will only work if the format is avif or webm, will convert into a comment else\
-[/noparse][url=https://exemple.com]hyperlinks[/url][noparse]
-
-Links and hyperlinks will be prepended with whatever link you choose. 
+[noparse]![embed](images and videos)[/noparse] will only work if the format is avif or webm, will convert into a link else
+[noparse][hyperlinks](https://exemple.com)[/noparse]
+**escaped syntax**. You should escape any symbols you don't want the converter to interpret. Symbols include *, _,~, `, |, and #, - if you want to put them on the start of a line 
+Links and hyperlinks will be prepended with whatever link you choose, if they don't start with http*. 
     
 
 [h2] Does not support [/h2]
-[*] Multi-level lists[/i][/np]
+[*] Multi-level lists
+
+
+[h2] image and links examples [/h2]
+
+current page:
+[url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./README.md]here[/url];
+webp media :
+![url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webp]media text[/url]
+webm media :
+![video]https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webm[/video]
+webp media (full path) :
+![video]https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.avif[/video]

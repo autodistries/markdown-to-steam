@@ -1,3 +1,5 @@
+<!-- mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/ -->
+
 # markdown-to-steam
 
 Converts regular markdown to steam-flavored markdown.\
@@ -31,11 +33,23 @@ __underlined text__ (with `__`  or `<u><\u>`)\
 
 `<!-- comments will show up in processed html as a zero-width table -->`\
 <!-- like this -->
-`![embed](images and videos)` will only work if the format is avif or webm, will convert into a comment else\
+`![embed](images and videos)` will only work if the format is avif or webm, will convert into a link else\
 `[hyperlinks](https://exemple.com)`
-
-Links and hyperlinks will be prepended with whatever link you choose. 
+\*\*escaped syntax\*\*. You should escape any symbols you don't want the converter to interpret. Symbols include \*, \_,\~, \`, \|, and \#, \- if you want to put them on the start of a line 
+Links and hyperlinks will be prepended with whatever link you choose, if they don't start with http\*. 
     
 
 ## Does not support
 - Multi-level lists
+
+
+## image and links examples
+
+current page:
+[here](./README.md);
+webp media :
+![media text](./output.webp)
+webm media :
+![media text](./output.webm)
+webp media (full path) :
+![media text](./output.avif)
