@@ -1,5 +1,8 @@
 <!-- mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/ -->
 
+[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/][/table]
+
+
 # markdown-to-steam
 
 Converts regular markdown to steam-flavored markdown.\
@@ -51,5 +54,5 @@ webp media :
 ![media text](./output.webp)
 webm media :
 ![media text](./output.webm)
-webp media (full path) :
+avif media (full path) :
 ![media text](./output.avif)

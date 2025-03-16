@@ -74,10 +74,12 @@ void processMarkerBuffer() {
       lastpos += index - lastpos;
     }
     markerBuffer = withoutSpaces.substr(lastpos);
-    cout << "finishing processing inconsistency w "<<markerBuffer<<endl;
+    cout << "finishing processing inconsistency w " << markerBuffer << endl;
 
     //   return;
   }
+
+  
 
   if (markerBuffer == "```") {
     if (!codeOpen) {
@@ -211,19 +213,27 @@ bool endsWith(const std::string &str, const std::string &suffix) {
   if (suffix.size() > str.size()) {
     return false;
 
-    // cout<<"comparing "<<str.substr(str.size() - suffix.size(), suffix.size()+1)<<" to "<<suffix<<endl;
+    // cout<<"comparing "<<str.substr(str.size() - suffix.size(),
+    // suffix.size()+1)<<" to "<<suffix<<endl;
   }
   return str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-void resetLinksStuff() {
-    if (!linkText.empty())     output += "[" + linkText + "]";
-    if (!linkUrl.empty()) output += "(" + linkUrl + ")";
-    inLinkText = false;
-    inLinkUrl = false;
-    linkUrl.clear();
-    linkText.clear();
-      nextLinkIsMedia = false;    
+void resetLinksStuff(string reason="") {
+  cout << "flush links "+reason << endl;
+  if (!linkText.empty() || !linkUrl.empty()) {
+    cout << "flushing nonemptylinks with status " << inLinkText << " "
+         << inLinkUrl << " " << linkText << "|||" << linkUrl << endl;
+  }
+  if (!linkText.empty())
+    output += "[" + linkText + "]";
+  if (!linkUrl.empty())
+    output += "(" + linkUrl + ")";
+  inLinkText = false;
+  inLinkUrl = false;
+  linkUrl.clear();
+  linkText.clear();
+  nextLinkIsMedia = false;
 }
 
 void processNewLine() {
@@ -231,7 +241,7 @@ void processNewLine() {
     output += " [/h" + std::to_string(headingLevel) + "]";
     headingLevel = 0;
   }
-  resetLinksStuff();
+  resetLinksStuff("because new line");
   processMarkerBuffer();
   markerBuffer.clear();
   nextLineRecent = true;
@@ -277,21 +287,28 @@ int main(int argc, char *argv[]) {
     cout << "Set url prefix to" + mediaUrlPrefix << endl;
   }
 
+  std::regex commentPattern(R"(<!-- (.*) -->)");
+  if (regex_search(content, match, commentPattern)) {
+    cout << "matched for comments" << endl;
+
+    content = std::regex_replace(content, commentPattern,
+                                 "[table comment:$1][/table]");
+  }
+
   std::regex endLineJumpIgnorePattern(R"((\\\n))");
   content = std::regex_replace(content, endLineJumpIgnorePattern, "\n");
 
+  //   cout << content<<endl<<endl;
 
-  std::stringstream preProcessedBuffer(content);
+  std::stringstream preProcessedBuffer(content.c_str());
 
+  //   inFile.close();
 
-  
-
-//   inFile.close();
-
-//   inFile = ifstream("README.md");
+  //   inFile = ifstream("README.md");
 
   while (preProcessedBuffer.get(curr)) {
     // SECTION 1: Process the current character (using a switch for flexibility)
+
     switch (curr) {
     case '*':
     case '_':
@@ -301,21 +318,35 @@ int main(int argc, char *argv[]) {
     case '#':
     case '-':
       // These are all possible marker characters. Accumulate them.
-      markerBuffer.push_back(curr);
-      break;
+      
+    if (!inLinkText && !inLinkUrl) {
+        markerBuffer.push_back(curr);
+        break;
+      } else {
+        if (inLinkText) {
+            // cout << "adding to text " << curr<<endl;
+            linkText.push_back(curr);
+          } else if (inLinkUrl) {
+            // cout << "adding to url " << curr<<endl;
+            linkUrl.push_back(curr);
+          } 
+          break;
+      }
+      
     case '[':
       processMarkerBuffer();
       // link.
       // Before switching to link mode flush any pending markers.
       // Start link text accumulation. We'll delay output until we get the full
       if (!codeOpen && !noparseOpen) {
-        if (output.empty() || (!output.empty() && output.back() == '!')) {
+        cout << "STRAT fricking link comment" << endl;
+        if (!output.empty() && output.back() == '!') {
           nextLinkIsMedia = true;
-          cout << "found a start of linked media"<<endl;
+          cout << "found a start of linked media" << endl;
         }
         if (!linkText.empty()) {
-            cout << "whoops. multiple link-like followed each other.\n";
-            resetLinksStuff();
+          cout << "whoops. multiple link-like followed each other.\n";
+          resetLinksStuff("because open new bracket");
         }
         inLinkText = true;
       } else {
@@ -326,7 +357,15 @@ int main(int argc, char *argv[]) {
       if (!codeOpen && !noparseOpen && inLinkText) {
         // End of link text. Expecting '(' next for URL.
         inLinkText = false;
+        cout << "end fricking link comment" << endl;
         // We output nothing yet. The URL part should follow.
+        if (preProcessedBuffer.peek() != '(') {
+          cout << "post-end was not parenthesis, it was"
+               << preProcessedBuffer.peek() << " discarding link " + linkText
+               << endl;
+          resetLinksStuff(" because close bracket and no parent");
+          //   output += "[" + linkText + "]";
+        }
       } else {
         // If we're not in a link text, treat as literal.
         processMarkerBuffer();
@@ -340,7 +379,7 @@ int main(int argc, char *argv[]) {
         inLinkUrl = true;
         linkUrl.clear();
       } else {
-        resetLinksStuff();
+        resetLinksStuff("because new paren but also no link text");
         processMarkerBuffer();
         output.push_back(curr);
       }
@@ -351,12 +390,14 @@ int main(int argc, char *argv[]) {
         inLinkUrl = false;
         trim(linkUrl);
         trim(linkText);
-        cout << "end processing link :"+linkUrl<<" linked media: "<<nextLinkIsMedia<<endl;
+        cout << "end processing link :" + linkUrl
+             << " linked media: " << nextLinkIsMedia << endl;
         if (!mediaUrlPrefix.empty() && !startsWith(linkUrl, "http")) {
           linkUrl = mediaUrlPrefix + linkUrl;
         }
+        if (nextLinkIsMedia) output.pop_back(); // remove the !
         if (linkUrl.size() < 4 ||
-            (!endsWith(linkUrl, "avif") && !endsWith(linkUrl, "webm"))) {
+            (!endsWith(linkUrl, "webm"))) { // !endsWith(linkUrl, "avif") &&  broken i think
           output += "[url=" + linkUrl + "]" + linkText + "[/url]";
         } else {
           output += "[video]" + linkUrl + "[/video]";
@@ -400,22 +441,10 @@ int main(int argc, char *argv[]) {
       }
       break;
     }
+
     // End of while iteration.
   }
-
-  // At end-of-file:
-  // If link accumulation was left open, flush it literally.
-  if (inLinkText) {
-    // We have an unclosed link – output the [ and its text literally.
-    output.push_back('[');
-    output += linkText;
-  }
-  if (inLinkUrl) {
-    output.push_back('(');
-    output += linkUrl;
-  }
-  // Flush any pending markers.
-  processMarkerBuffer();
+  processNewLine();
 
   // It might be wise to also close any open transformation – in a real parser
   // you may want to handle this differently.
@@ -441,7 +470,6 @@ int main(int argc, char *argv[]) {
   // Write the processed output to the steam-flavored file.
   outFile << output;
 
-  inFile.close();
   outFile.close();
 
   std::cout << "Transformation complete. Output written to " << argv[2]

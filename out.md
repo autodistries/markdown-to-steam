@@ -1,4 +1,7 @@
-<!--  mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/ -->
+[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/][/table]
+
+[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/][/table]
+
 
 [h1] markdown-to-steam [/h1]
 
@@ -11,7 +14,7 @@ This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/
 [*] Configure base media links
     [noparse]![images with](their link)[/noparse] that don't start with [noparse]http[/noparse] get that prepended to their link. Set the following at the start of your Markdown file :
 [code]
-<!--  mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/ -->
+[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/][/table]
 [/code]
 [*] run [noparse]./main file.md [output.file][/noparse] 
 [*] profit
@@ -31,8 +34,8 @@ This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/
 [noparse]---[/noparse] separators
 [*] lists (first level only)
 
-[noparse]<!--  comments will show up in processed html as a zero-width table -->[/noparse]
-<!--  like this -->
+[noparse][table comment:comments will show up in processed html as a zero-width table][/table][/noparse]
+[table comment:like this][/table]
 [noparse]![embed](images and videos)[/noparse] will only work if the format is avif or webm, will convert into a link else
 [noparse][hyperlinks](https://exemple.com)[/noparse]
 **escaped syntax**. You should escape any symbols you don't want the converter to interpret. Symbols include *, _,~, `, |, and #, - if you want to put them on the start of a line 
