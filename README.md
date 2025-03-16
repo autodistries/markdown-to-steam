@@ -47,13 +47,19 @@ Links and hyperlinks will be prepended with whatever link you choose, if they do
 ## image and links examples
 
 current page: [here](./README.md);\
+
 webp media :
 ![media text](./output.webp)
+
 
 webm media :
 ![media text](./output.webm)
 
+
+
 avif media (full path) :
 ![media text](https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/output.avif)
+
+
 
 see [out.md](./out.md) for a textual result of this tool, and [insert guide URL](here) for the render
