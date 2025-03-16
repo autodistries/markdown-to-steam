@@ -7,6 +7,21 @@
 
 using namespace std;
 
+bool startsWith(const std::basic_string<char> &str,
+                const std::basic_string<char> &prefix) {
+  if (prefix.size() > str.size()) {
+    return false;
+  }
+  return str.compare(0, prefix.size(), prefix) == 0;
+}
+
+bool endsWith(const std::string &str, const std::string &suffix) {
+  if (suffix.size() > str.size()) {
+    return false;
+  }
+  return str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
 void print_help(std::string s) {
   cout << "Usage:\n" << s << " input.md [output]";
 }
@@ -31,7 +46,7 @@ int main(int argc, char *argv[]) {
 
   if (false) {
   awoo:
-    input = ifstream("test.md");
+    input = ifstream("README.md");
   } else {
     input = ifstream(argv[1]);
   }
@@ -49,7 +64,7 @@ int main(int argc, char *argv[]) {
     bool currentlyItalic = false;
     int noparseLength = 0;
     int offset = 0;
-    string urlBase = "";
+    string mediaUrlPrefix = "";
 
     while (std::getline(input, line)) { // Read line by line
       std::regex noparsepattern(R"((\`+))");
@@ -84,11 +99,11 @@ int main(int argc, char *argv[]) {
                 repl = "[/noparse]";
 
               string linestart = line.substr(0, currentPos + match.position(1));
-              cout << "prestring " + linestart << endl;
+              // cout << "prestring " + linestart << endl;
               line =
                   linestart + repl +
                   line.substr(currentPos + match.position(1) + match.length(1));
-              cout << "poststring " + line << endl;
+              cout << "finish not parsing poststring " + line << endl;
 
               currentPos += match.position(1) + repl.size();
               currentlyNoparse = false;
@@ -107,11 +122,11 @@ int main(int argc, char *argv[]) {
               repl = "[noparse]";
 
             string linestart = line.substr(0, currentPos + match.position(1));
-            cout << "prestring " + linestart << endl;
+            cout << "not parsing after prestring " + linestart << endl;
             line =
                 linestart + repl +
                 line.substr(currentPos + match.position(1) + match[1].length());
-            cout << "poststring " + line << endl;
+            // cout << "poststring " + line << endl;
 
             currentPos += match.position(1) + repl.size();
           }
@@ -120,15 +135,13 @@ int main(int argc, char *argv[]) {
           break;
         }
       }
-      cout << "code blocks done";
 
-      while (regex_match(line, noparsepattern)) {
-        if (currentlyStriked) {
-          line = std::regex_replace(line, noparsepattern, "$1[/strike]$2");
-        } else {
-          line = std::regex_replace(line, noparsepattern, "$1[strike]$2");
-        }
-        currentlyStriked = !currentlyStriked;
+      if (currentlyNoparse) {
+        cout << "(not parsing)  " + line << endl;
+        // cin.get();
+
+        buffer << line << endl;
+        continue;
       }
 
       std::regex h1pattern(R"(# (.*))");
@@ -159,18 +172,14 @@ int main(int argc, char *argv[]) {
         }
       }
 
-      std::regex underlinedhtml(R"((.*)<u>(.*))");
+      std::regex underlinedhtml(R"((.*)<(/?)u>(.*))");
       while (regex_match(line, underlinedhtml)) {
-        line = std::regex_replace(line, underlinedhtml, "$1[u]$2");
-      }
-      std::regex underlinedhtmlclose(R"((.*)</u>(.*))");
-      while (regex_match(line, underlinedhtmlclose)) {
-        line = std::regex_replace(line, underlinedhtmlclose, "$1[/u]$2");
+        line = std::regex_replace(line, underlinedhtml, "$1[$2u]$3");
       }
 
       std::regex strikedpattern(R"((.*)~~(.*))");
-      currentlyStriked = !currentlyStriked;
       while (regex_match(line, strikedpattern)) {
+        currentlyStriked = !currentlyStriked;
         if (currentlyStriked) {
           line = std::regex_replace(line, strikedpattern, "$1[/strike]$2");
         } else {
@@ -178,10 +187,10 @@ int main(int argc, char *argv[]) {
         }
       }
 
-
       std::regex italicpattern(R"((.*)\*(.*))");
       currentlyItalic = !currentlyItalic;
       while (regex_match(line, italicpattern)) {
+        currentlyItalic = !currentlyItalic;
         if (currentlyItalic) {
           line = std::regex_replace(line, italicpattern, "$1[/i]$2");
         } else {
@@ -203,31 +212,59 @@ int main(int argc, char *argv[]) {
         line = "[hr][/hr]";
       }
 
-
-      std::regex urlPrefixStorepattern(R"(<!-- (.*) -->)");
-      if (regex_match(line, urlPrefixStorepattern)) {
-        urlBase = std::regex_replace(line, urlPrefixStorepattern, "$1");
-        continue;
+      std::regex listPatternDash(R"(^[-\*] (.*$))");
+      if (regex_match(line, listPatternDash)) {
+        line = std::regex_replace(line, listPatternDash, "[*] $1");
       }
 
+      // std::regex listPatternDash(R"((^- .*$))");
+      // if (regex_match(line, listPatternDash)) {
+      //     line = std::regex_replace(line, listPatternDash, "[*] $1");
+      // }
 
+      std::smatch match;
+
+      std::regex commentPropertyPattern(R"(^<!-- ([a-zA-Z]*:)(.*) -->$)");
+      std::regex commentPattern(R"(<!-- (.*) -->)");
+      if (regex_match(line, match, commentPropertyPattern)) {
+        if (startsWith(match.str(1).c_str(), "mediaUrlPrefix:")) {
+          mediaUrlPrefix = match.str(2);
+          cout << "set urlBase:" + mediaUrlPrefix << endl;
+        }
+        line = std::regex_replace(line, commentPropertyPattern,
+                                  "[table $1$2][/table]");
+
+      } else if (regex_match(line, match, commentPattern)) {
+
+        line = std::regex_replace(line, commentPattern,
+                                  "[table comment:$1][/table]");
+      }
 
       std::regex imagepattern(R"(!\[(.*)\]\((.*)\))");
-      std::smatch match;
       while (regex_match(line, match, imagepattern)) {
         string prefixadd = "";
-        if (strcmp(match.str(1).substr(0,4).c_str(), "http") != 0 ) prefixadd = urlBase+"/";
-        line = std::regex_replace(line, imagepattern, "[video] "+prefixadd+"$2 [/video]");
+        if (!startsWith(match.str(1), "http"))
+          prefixadd = mediaUrlPrefix + "/";
+        if (!endsWith(match.str(2).c_str(), "avif") &&
+            !endsWith(match.str(2).c_str(), "webm")) {
+          line = "[table warning:unsupported format:" + match.str(1) + " | " +
+                 match.str(2) + "][/table]";
+
+        } else
+          line = std::regex_replace(line, imagepattern,
+                                    "[video] " + prefixadd + "$2 [/video]");
       }
-      // [video] https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/images/demo.webm [/video]
-
-
+      // [video]
+      // https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/images/demo.webm
+      // [/video]
 
       std::regex urlpattern(R"(\[(.*)\]\((.*)\))");
       while (regex_match(line, match, urlpattern)) {
         string prefixadd = "";
-        if (strcmp(match.str(1).substr(0,4).c_str(), "http") != 0 ) prefixadd = urlBase+"/";
-        line = std::regex_replace(line, urlpattern, "[url=$2] "+prefixadd+"$1 [/url]");
+        if (!startsWith(match.str(1), "http"))
+          prefixadd = mediaUrlPrefix + "/";
+        line = std::regex_replace(line, urlpattern,
+                                  "[url=$2] " + prefixadd + "$1 [/url]");
       }
 
       std::regex linebk(R"((.*)(\\$))");

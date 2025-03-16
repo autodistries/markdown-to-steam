@@ -1,52 +1,41 @@
-[h1] Background preview [/h1]
-Lets you preview any in-game scene full screen, with parallax and no cluttery-ui
-[img] https://codeberg.org/catsoft/RainWorldMods/src/branch/main/BackgroundPreview//BackgroundPreview/thumbnail.png [/img]
-Open from this mod's Remix menu, or from Options -> Backgrounds -> PREVIEW (only with Remix enabled).
-Also supports every kind of [noparse]MenuScene.SceneID[/noparse], as long as they are properly registered.
+[h1] markdown-to-steam [/h1]
 
-[h2] Controls [/h2]
-Mouse is disabled on the Preview menu, but moving it around still moves layers of the scene.
-Info on controls is also available in the menu
-- [noparse]H[/noparse] toggles the info/help text
-- [noparse]Esc[/noparse] lets you quit the menu
-- Left and right (joysticks supported) let you navigate to the next scene
-- [noparse]R[/noparse] lets you reload the current scene
-- [noparse]M[/noparse] forces unloading cached resources; This is done automatically before OOM, but if you find it sluggish you can do it yourself. 
-- [noparse]T[/noparse] toggles flatmode. In my experience this doesn't do much, and will be reset to False if it causes errors
-- [noparse]S[/noparse] goes to next slide, for scenes that have more than one slide (i.e. gourmand ending)
-- [noparse]F[/noparse] goes to next slide of Gourmand's dreams
+Converts regular markdown to steam-flavored markdown.
+This tool mainly follows [steam's syntax guide](https://steamcommunity.com/comment/Recommendation/formattinghelp).
 
 
+[h2] Usage [/h2]
 
-[h2] Configuration [/h2]
-You can configure, from the Preview menu and using your keyboard, the kind of Scenes you want to see.
-- All (everything)
-- Backgrounds (regions, and the game's main menu backgrounds)
-- Intros (scenes that play when starting a character)
-- Endings (scenes that play when finishing a character, or slugcat art available after that on the character select)
-- Passages (shows passage scenes)
-- Slugcats (from the character select screen)
-- Dreams
+[*] Configure base media links
+    [noparse]![images with](their link)[/noparse] that don't start with [noparse]http[/noparse] get that prepended to their link. Set the following at the start of your Markdown file :
+[code]
+<!-- mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/ -->
+[/code]
+[*] run [noparse]./main file.md [output.file][/noparse] 
+[*] profit
 
-The first scenne you will see will neverr be spoilery, but after that you can see everithing you want to
-Default settings have these scenes to true: All, Backgrounds and Intros.
-Your configuration is saved upon exiting the Preview menu.
+[h2] Supports :  [/h2]
 
-[h2] Quirks [/h2]
-If you feel laginness, press M to manually clear assets. If 32b, the game will crash when it uses >2600Mb, and way higher with 64b. By default, if the game takes 1GB more than it did in the beginning (capped at 2.4Gb), it clears itself.
-Sometimes the game may mess up loading scenes; that can be solved by pressing R, or M in the worst cases
-Not all categories are well-defined, because the game has an irregular scene-namesing scheme
-Some scenes are broken: Outro_3_Face, Intro_10_Fall, Intro_9_Rainy_Climb (you will get flashbanged with the two Intro ones, prepare your eyes)
+[h3] headings (up to level 3) [/h3]
 
-[h2] Visuals [/h2]
-
-[img] https://codeberg.org/catsoft/RainWorldMods/src/branch/main/BackgroundPreview//images/ui.png [/img]
-
-[img] https://codeberg.org/catsoft/RainWorldMods/src/branch/main/BackgroundPreview//./images/demo.webm [/img]
-
-
-
+[strike]striked text[/strike]
+[b]bold text[/b]
+[i]italic text[/i] (with  [noparse][i][/noparse] or [noparse]_[/noparse])
+[/u]underlined text[u] (with [noparse][/u][/noparse]  or [noparse][u]<\u>[/noparse])
+[code]Code blocks[/code] (Not inline, big blocks only)
+[noparse]tiny [i]code[/i] [i]blocks[/i][/noparse]  (will not convert, and steam will not render)
 
 [hr][/hr]
-Workshop : https://steamcommunity.com/sharedfiles/filedetails/?id=3443949906
-Manual install from [./BackgroundPreview.zip](./BackgroundPreview.zip)
+[noparse]---[/noparse] separators
+[*] lists (first level only)
+
+[noparse]<!-- comments will show up in processed html as a zero-width table -->[/noparse]
+[table comment:like this][/table]
+[noparse]![embed](images and videos)[/noparse] will only work if the format is avif or webm, will convert into a comment else
+[noparse][hyperlinks](https://exemple.com)[/noparse]
+
+Links and hyperlinks will be prepended with whatever link you choose. 
+    
+
+[h2] Does not support [/h2]
+[*] Multi-level lists

@@ -1,0 +1,41 @@
+[h1] markdown-to-steam [/h1]
+
+Converts regular markdown to steam-flavored markdown.\
+This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/formattinghelp]steam's syntax guide[/url].
+
+
+[h2] Usage [/h2]
+
+[*] Configure base media links
+    [noparse]![images with](their link)[/noparse] that don't start with [noparse]http[/noparse] get that prepended to their link. Set the following at the start of your Markdown file :
+[code]
+<!--  mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/ -->
+[/code]
+[*] run [noparse]./main file.md [output.file][/noparse] 
+[*] profit
+
+[h2] Supports :  [/h2]
+
+[h3] headings (up to level 3) [/h3]
+
+[strike]striked text[/strike]\
+[b]bold text[/b]\
+[i]italic text[/i] (with  `*` or `_`)\
+[u]underlined text[/u] (with `__`  or [noparse]<u><\u>[/noparse])\
+[code]Code blocks[/code] (Not inline, big blocks only)\
+[noparse]tiny [i]code[/i] [i]blocks*``  (will not convert, and steam will not render)\
+
+---
+`---` separators\
+[*] lists (first level only)
+
+[/noparse]<!--  comments will show up in processed html as a zero-width table -->[noparse]\
+<!--  like this -->
+[/noparse]![url=images and videos]embed[/url][noparse] will only work if the format is avif or webm, will convert into a comment else\
+[/noparse][url=https://exemple.com]hyperlinks[/url][noparse]
+
+Links and hyperlinks will be prepended with whatever link you choose. 
+    
+
+[h2] Does not support [/h2]
+[*] Multi-level lists[/i][/np]
