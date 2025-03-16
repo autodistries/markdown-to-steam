@@ -1,7 +1,5 @@
 [table comment:mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/][/table]
 
-[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/][/table]
-
 
 [h1] markdown-to-steam [/h1]
 
@@ -16,7 +14,7 @@ This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/
 [code]
 [table comment:mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/][/table]
 [/code]
-[*] run [noparse]./main file.md [output.file][/noparse] 
+[*] run [noparse]./convert file.md [output.file][/noparse] 
 [*] profit
 
 [h2] Supports :  [/h2]
@@ -48,11 +46,14 @@ Links and hyperlinks will be prepended with whatever link you choose, if they do
 
 [h2] image and links examples [/h2]
 
-current page:
-[url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./README.md]here[/url];
+current page: [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./README.md]here[/url];
 webp media :
-![url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webp]media text[/url]
+[url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webp]media text[/url]
+
 webm media :
-![video]https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webm[/video]
-webp media (full path) :
-![video]https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.avif[/video]
+[video]https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webm[/video]
+
+avif media (full path) :
+[url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/output.avif]media text[/url]
+
+see [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./out.md]out.md[/url] for a textual result of this tool, and [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/here]insert guide URL[/url] for the render

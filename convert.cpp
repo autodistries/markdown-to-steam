@@ -9,12 +9,6 @@
 #include <vector>
 
 using namespace std;
-// A simple structure to hold information about a pending transformation
-struct Transform {
-  std::string
-      marker;  // e.g., "*" for italic, "**" for bold, "__" for underline etc.
-  bool isOpen; // true if we have just opened, false if closing
-};
 
 std::string output;
 char curr;
@@ -252,26 +246,26 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < argc; i++) {
     cout << "param " << i << "; " << argv[i] << endl;
   }
-  std::ifstream inFile("README.md");
-  std::ofstream outFile("out.md");
+//   std::ifstream inFile("README.md");
+//   std::ofstream outFile("out.md");
 
-  //   if (argc < 3) {
-  //     std::cerr << "Usage: " << argv[0]
-  //               << " <input_markdown_file> <output_steam_file>" << std::endl;
-  //     return 1;
-  //   }
+    if (argc < 3) {
+      std::cerr << "Usage: " << argv[0]
+                << " <input_markdown_file> <output_steam_file>" << std::endl;
+      return 1;
+    }
 
-  //   std::ifstream inFile(argv[1]);
-  //   if (!inFile) {
-  //     std::cerr << "Error: Unable to open input file." << std::endl;
-  //     return 1;
-  //   }
+    std::ifstream inFile(argv[1]);
+    if (!inFile) {
+      std::cerr << "Error: Unable to open input file." << std::endl;
+      return 1;
+    }
 
-  //   std::ofstream outFile(argv[2]);
-  //   if (!outFile) {
-  //     std::cerr << "Error: Unable to open output file." << std::endl;
-  //     return 1;
-  //   }
+    std::ofstream outFile(argv[2]);
+    if (!outFile) {
+      std::cerr << "Error: Unable to open output file." << std::endl;
+      return 1;
+    }
   string mediaUrlPrefix;
   std::stringstream matchingBuffer;
   matchingBuffer << inFile.rdbuf();

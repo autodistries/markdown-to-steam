@@ -1,7 +1,5 @@
 <!-- mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/ -->
 
-[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/][/table]
-
 
 # markdown-to-steam
 
@@ -16,7 +14,7 @@ This tool mainly follows [steam's syntax guide](https://steamcommunity.com/comme
 ```
 <!-- mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/ -->
 ```
-- run `./main file.md [output.file]` 
+- run `./convert file.md [output.file]` 
 - profit
 
 ## Supports : 
@@ -48,11 +46,14 @@ Links and hyperlinks will be prepended with whatever link you choose, if they do
 
 ## image and links examples
 
-current page:
-[here](./README.md);
+current page: [here](./README.md);\
 webp media :
 ![media text](./output.webp)
+
 webm media :
 ![media text](./output.webm)
+
 avif media (full path) :
-![media text](./output.avif)
+![media text](https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/output.avif)
+
+see [out.md](./out.md) for a textual result of this tool, and [insert guide URL](here) for the render
