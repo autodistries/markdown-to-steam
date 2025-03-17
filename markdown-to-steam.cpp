@@ -368,7 +368,7 @@ int main(int argc, char *argv[]) {
       break;
     case '(':
       if (!codeOpen && !noparseOpen && !inLinkUrl && !inLinkText &&
-          (!linkText.empty())) {
+          (nextLinkIsMedia || !linkText.empty())) {
         // After link text, this indicates the start of a URL.
         inLinkUrl = true;
         linkUrl.clear();
@@ -394,7 +394,7 @@ int main(int argc, char *argv[]) {
             (!endsWith(linkUrl, "webm"))) { // !endsWith(linkUrl, "avif") &&  broken i think
           output += "[url=" + linkUrl + "]" + linkText + "[/url]";
         } else {
-          output += "[video]" + linkUrl + "[/video]";
+          output += linkText + ": \n[video]" + linkUrl + "[/video]";
         }
         linkText.clear();
         linkUrl.clear();
