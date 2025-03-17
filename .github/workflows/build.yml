@@ -1,10 +1,9 @@
-name: Build C++ Executables
+name: Build and Release
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    # remove tag filter so that untagged pushes are included
 
 jobs:
   build:
@@ -12,24 +11,92 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        # Optionally, you could also include compiler variants
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-
-      - name: Set up compiler and build
+      
+      - name: Build executable (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
         run: |
-          if [[ "${{ runner.os }}" == "Windows" ]]; then
-            echo "Building on Windows..."
-            # Assuming your code file is located at /markdown-to-steam/markdown-to-steam.cpp
-            # Using g++ from MinGW, which is typically available on windows-latest runners.
-            g++ -Wall -Wextra -g3 markdown-to-steam/markdown-to-steam.cpp -o markdown-to-steam/markdown-to-steam.exe
-          else
-            echo "Building on Linux..."
-            g++ -Wall -Wextra -g3 markdown-to-steam/markdown-to-steam.cpp -o markdown-to-steam/markdown-to-steam
-      - name: Archive build artifacts
-        uses: actions/upload-artifact@v3
+          echo "Building on Linux..."
+          g++ -Wall -Wextra -g3 markdown-to-steam.cpp -o markdown-to-steam-linux
+
+      - name: Build executable (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          echo "Building on Windows..."
+          g++ -Wall -Wextra -g3 markdown-to-steam.cpp -o markdown-to-steam-windows.exe
+      
+      # - name: Archive executable
+      #   shell: bash
+      #   run: |
+      #     if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+      #       zip -j build-${{ matrix.os }}.zip markdown-to-steam-linux
+      #     else
+      #       zip -j build-${{ matrix.os }}.zip markdown-to-steam-windows.exe
+      #     fi
+      
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4.6.1
         with:
-          name: built-executable
-          path: |
-            markdown-to-steam/markdown-to-steam*
+          name: build-${{ matrix.os }}
+          path: markdown-to-steam-*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository for tagging
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensure full history so that git tags are available
+
+      - name: Determine release tag
+        id: get_tag
+        shell: bash
+        run: |
+          # If this commit already has a tag, use it. Otherwise create a custom tag.
+          CURRENT_TAG=$(git tag --points-at HEAD)
+          if [[ -z "$CURRENT_TAG" ]]; then
+            # Generate a default tag using a prefix and timestamp (or use any random mechanism)
+            GENERATED_TAG="v1.0.0-$(date +%s)"
+            echo "No tag on this commit. Using generated tag: $GENERATED_TAG"
+            # Creating a tag in the repo (this requires pushing back to the remote)
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$GENERATED_TAG"
+            git push origin "$GENERATED_TAG"
+            echo "::set-output name=release_tag::$GENERATED_TAG"
+          else
+            echo "Found tag on commit: $CURRENT_TAG"
+            echo "::set-output name=release_tag::$CURRENT_TAG"
+          fi
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_tag.outputs.release_tag }}
+          release_name: Release ${{ steps.get_tag.outputs.release_tag }}
+          draft: false
+          prerelease: false
+      
+      - name: Download Artifacts
+        id: download_artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: ./release-assets
+
+      - name: Upload Release Asset(s)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release-assets
+          asset_name: release-assets.zip
+          asset_content_type: application/zip
