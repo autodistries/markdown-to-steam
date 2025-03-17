@@ -1,0 +1,35 @@
+name: Build C++ Executables
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        # Optionally, you could also include compiler variants
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up compiler and build
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "Building on Windows..."
+            # Assuming your code file is located at /markdown-to-steam/markdown-to-steam.cpp
+            # Using g++ from MinGW, which is typically available on windows-latest runners.
+            g++ -Wall -Wextra -g3 markdown-to-steam/markdown-to-steam.cpp -o markdown-to-steam/markdown-to-steam.exe
+          else
+            echo "Building on Linux..."
+            g++ -Wall -Wextra -g3 markdown-to-steam/markdown-to-steam.cpp -o markdown-to-steam/markdown-to-steam
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-executable
+          path: |
+            markdown-to-steam/markdown-to-steam*
