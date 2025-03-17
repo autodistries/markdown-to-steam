@@ -26,16 +26,15 @@ This tool mainly follows [steam's syntax guide](https://steamcommunity.com/comme
 - ``tiny [i]code[/i] *blocks*``  (will not convert, and steam will not render)\
 
 ----
--`---` separators\
+- `---` separators\
 - lists (first level only)
-
 - `<!-- comments will show up in processed html as a zero-width table -->`\
 `<!-- like this -->`
 <!-- hidden -->
 - `![embed](images, videos, and links)` be presented as an embed video if the format is ~~avif or~~ webm, or as links else: 
     Links and hyperlinks will be prepended with whatever link you choose, if they don't start with http\*. 
 - \*\*escaped syntax\*\*. You should escape any symbols you don't want the converter to interpret. Symbols include \*, \_,\~, \`, \|, and \#, \- if you want to put them on the start of a line 
-    
+
 
 ## Does not support
 - Multi-level lists

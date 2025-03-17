@@ -32,6 +32,10 @@ bool spoilerOpen = false;
 bool noparseOpen = false;
 bool nextLinkIsMedia = false;
 
+int consecutiveNewlines = 0;
+bool exitListNow = false;
+bool listRecent = false;
+
 bool nextLineRecent = true;
 int headingLevel = 0;
 
@@ -149,15 +153,16 @@ void processMarkerBuffer() {
         output += "[/spoiler]";
         spoilerOpen = false;
       }
-    } else if (nextLineRecent && markerBuffer == "- ") {
+    } else if (consecutiveNewlines != 0 && markerBuffer == "- ") {
+      listRecent = true;
       output += "[*]";
-    } else if (nextLineRecent && markerBuffer == "# ") {
+    } else if (consecutiveNewlines != 0 && markerBuffer == "# ") {
       headingLevel = 1;
       output += "[h1]";
-    } else if (nextLineRecent && markerBuffer == "## ") {
+    } else if (consecutiveNewlines != 0 && markerBuffer == "## ") {
       headingLevel = 2;
       output += "[h2]";
-    } else if (nextLineRecent && markerBuffer == "### ") {
+    } else if (consecutiveNewlines != 0 && markerBuffer == "### ") {
       headingLevel = 3;
       output += "[h3]";
     } else if (strcmp(markerBuffer.substr(0, 3).c_str(), "---") == 0) {
@@ -172,7 +177,7 @@ void processMarkerBuffer() {
   }
 
   markerBuffer.clear();
-  nextLineRecent = false;
+  if (!nextLineRecent) consecutiveNewlines = 0;
 };
 
 static inline void ltrim(std::string &s) {
@@ -231,6 +236,9 @@ void resetLinksStuff(string reason="") {
 }
 
 void processNewLine() {
+  consecutiveNewlines++;
+  nextLineRecent = true;
+
   if (headingLevel != 0) {
     output += " [/h" + std::to_string(headingLevel) + "]";
     headingLevel = 0;
@@ -238,7 +246,6 @@ void processNewLine() {
   resetLinksStuff("because new line");
   processMarkerBuffer();
   markerBuffer.clear();
-  nextLineRecent = true;
   return;
 };
 
@@ -432,6 +439,15 @@ int main(int argc, char *argv[]) {
         processMarkerBuffer();
         // SECTION 2: Append the current (literal) character to output.
         output.push_back(curr);
+        if (consecutiveNewlines > 2 && listRecent) {
+          listRecent = false;
+          output+="[/list]";
+        }
+       if (!nextLineRecent) consecutiveNewlines = 0;
+       else nextLineRecent = false;
+
+
+       
       }
       break;
     }

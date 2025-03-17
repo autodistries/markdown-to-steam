@@ -9,7 +9,7 @@ This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/
 [*] Configure base media links
     [noparse]![images with](their link)[/noparse] that don't start with [noparse]http[/noparse] get that prepended to their link. Set the following at the start of your Markdown file :
 [code]
-<!-- mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/ -->
+[table comment:mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/][/table]
 [/code]
 [*] run [noparse]./markdown-to-steam file.md [output.file][/noparse] 
 [*] profit
@@ -26,23 +26,22 @@ This tool mainly follows [url=https://steamcommunity.com/comment/Recommendation/
 [*] [noparse]tiny [i]code[/i] *blocks*[/noparse]  (will not convert, and steam will not render)
 
 [hr][/hr]
--[noparse]---[/noparse] separators
+[/list][*] [noparse]---[/noparse] separators
 [*] lists (first level only)
-
-[*] [noparse]<!-- comments will show up in processed html as a zero-width table -->[/noparse]
+[*] [noparse][table comment:comments will show up in processed html as a zero-width table][/table][/noparse]
 [noparse][table comment:like this][/table][/noparse]
 [table comment:hidden][/table]
 [*] [noparse]![embed](images, videos, and links)[/noparse] be presented as an embed video if the format is [strike]avif or[/strike] webm, or as links else: 
     Links and hyperlinks will be prepended with whatever link you choose, if they don't start with http*. 
 [*] **escaped syntax**. You should escape any symbols you don't want the converter to interpret. Symbols include *, _,~, `, |, and #, - if you want to put them on the start of a line 
-    
 
-[h2] Does not support [/h2]
+
+[/list][h2] Does not support [/h2]
 [*] Multi-level lists
 [*] Tables
 
 
-[h2] image and links examples [/h2]
+[/list][h2] image and links examples [/h2]
 
 current page: [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./README.md]here[/url];
 
@@ -52,6 +51,7 @@ webp media :
 
 
 webm media :
+media text: 
 [video]https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./output.webm[/video]
 
 
@@ -59,4 +59,4 @@ avif media (full path) :
 [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/output.avif]media text[/url]
 
 
-see [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./out.md]out.md[/url] for a textual result of this tool, and [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/here]insert guide URL[/url] for the render
+see [url=https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/./out.md]out.md[/url] for a textual result of this tool, and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3446184067]on  the Workshop[/url] for the render
