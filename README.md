@@ -6,7 +6,8 @@ This tool mainly follows [steam's syntax guide](https://steamcommunity.com/comme
 
 ## Usage
 
-- Configure base media links
+- download your executable (`markdown-to-steam` on linux, `markdown-to-steam.exe` on windows)
+- (optional) Configure base media links
     `![images with](their link)` that don't start with `http` get that prepended to their link. Set the following at the start of your Markdown file :
 ```
 <!-- mediaUrlPrefix:https://codeberg.org/catsoft/RainWorldMods/media/branch/main/BackgroundPreview/ -->
