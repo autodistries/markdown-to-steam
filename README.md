@@ -59,4 +59,4 @@ avif media (full path) :
 ![media text](https://codeberg.org/catsoft/markdown-to-steam/media/branch/main/output.avif)
 
 
-see [out.md](./out.md) for a textual result of this tool, and [insert guide URL](here) for the render
+see [out.md](./out.md) for a textual result of this tool, and [on  the Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3446184067) for the render
