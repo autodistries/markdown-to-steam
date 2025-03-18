@@ -32,7 +32,7 @@ bool spoilerOpen = false;
 bool noparseOpen = false;
 bool nextLinkIsMedia = false;
 
-int consecutiveNewlines = 0;
+int consecutiveNewlines = 1;
 bool exitListNow = false;
 bool listRecent = false;
 

@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build standalone windows",
+            "type": "shell",
+            "command": "x86_64-w64-mingw32-g++",
+            "args": [
+                "-Wall",
+                "-Wextra",
+                "-static-libgcc",
+                "-static-libstdc++",
+                "-g3",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "/bin"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault,": false
+            },
+            // "condition": "equals ${fileExtname} .cpp"
+        }
+    ]
+}
